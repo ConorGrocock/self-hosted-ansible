@@ -1,0 +1,12 @@
+- name: Check for Python
+  become: true
+  raw: test -e /usr/bin/python
+  changed_when: false
+  failed_when: false
+  register: check_python
+
+- name: Install Python
+  become: true
+  raw: sudo apt -y update && sudo apt install -y python
+  when: check_python.rc != 0
+  become: true

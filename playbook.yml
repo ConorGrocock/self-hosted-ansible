@@ -1,0 +1,12 @@
+- hosts: all
+  roles:
+    - common
+
+- hosts: ubuntu-monitoring
+  roles:
+    - prometheus
+
+- hosts: certificate-authority
+  roles:
+    - docker
+    - ca

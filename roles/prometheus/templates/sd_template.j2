@@ -1,0 +1,14 @@
+[
+  {% for target in groups['all'] %}
+  {
+    "targets": [
+      "{{ hostvars[target]['ansible_host'] }}:9100"
+    ],
+    "labels": {
+      "job": "Ansible Node Exporter",
+      "hostname": "{{ hostvars[target]['inventory_hostname'] }}",
+      "instance": "{{ hostvars[target]['ansible_host'] }}"
+    }
+  }{% if not loop.last %},{% endif %}
+  {% endfor %}
+]

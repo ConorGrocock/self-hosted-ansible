@@ -1,0 +1,58 @@
+---
+
+- name: Install UFW
+  become: yes
+  apt:
+    name: ufw
+    state: latest
+    install_recommends: no
+
+
+- name: Install Git
+  become: yes
+  apt:
+    name: git
+    state: latest
+    install_recommends: no
+
+
+- name: Clone 
+  git:
+    clone: yes
+    dest: "{{ stepca_git_dir }}/"
+    repo: "{{ stecca_url }}"
+    force: yes
+
+- name: Upload cfssl-config
+  template:
+    dest: "{{ stepca_git_dir }}/cfssl-config.json"
+    src: cfssl-config.j2
+
+- name: Upload csr_root_ca
+  template:
+    dest: "{{ stepca_git_dir }}/csr_root_ca.json"
+    src: csr_root_ca.j2
+
+- name: Upload csr_intermediate_ca
+  template:
+    dest: "{{ stepca_git_dir }}/csr_intermediate_ca.json"
+    src: csr_intermediate_ca.j2
+
+- name: Upload ocsp.csr
+  template:
+    dest: "{{ stepca_git_dir }}/ocsp.csr.json"
+    src: ocsp.csr.j2
+
+- name: Upload lemur
+  template:
+    dest: "{{ stepca_git_dir }}/lemur.env"
+    src:  lemur.j2
+
+- name: Upload creds
+  template:
+    dest: "{{ stepca_git_dir }}/creds.env"
+    src:  creds.j2
+
+- name: Finished
+  ansible.builtin.debug:
+    msg: "Automatic setup done. Please continue by hand. Instructions can be found here https://github.com/Steccas/stecCA"

@@ -1,0 +1,40 @@
+---
+
+- name: Download and unarchive Node Exporter
+  ansible.builtin.unarchive:
+    src: "{{ node_exporter_url }}"
+    dest: /tmp/
+    remote_src: yes
+
+
+- name: Create Node Exporter user
+  become: true
+  ansible.builtin.user:
+    name: node_exporter
+    shell: /bin/false
+    state: present
+    password: "{{ lookup('password', 'credentials/common/monitoring/node_exporter length=30 encrypt=sha512_crypt') }}"
+
+- name: Copy Node Exporter executable
+  become: true
+  ansible.builtin.copy:
+    src: "/tmp//node_exporter-{{ node_exporter_version }}.linux-386/node_exporter"
+    dest: "/usr/bin/node_exporter"
+    remote_src: yes
+    mode: '0755'
+
+- name: Copy systemd service file to server
+  become: true
+  copy:
+    src: node-exporter.service
+    dest: /etc/systemd/system
+    owner: root
+    group: root
+    
+- name: Start Node Exporter
+  become: true
+  systemd:
+    name: node-exporter
+    daemon_reload: yes
+    state: started
+    enabled: yes
