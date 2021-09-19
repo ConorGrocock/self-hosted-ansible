@@ -1,12 +1,22 @@
-- hosts: all
-  roles:
-    - common
+# - hosts: all
+#   become: yes
+#   roles:
+#     - common
 
-- hosts: ubuntu-monitoring
-  roles:
-    - prometheus
+# - hosts: prometheus
+#   roles:
+#     - prometheus
 
-- hosts: certificate-authority
+- hosts: docker
+  become: yes
   roles:
     - docker
-    - ca
+
+# - hosts: pihole
+#   roles:
+#     - pihole
+
+# - hosts: cicd
+#   become: yes
+#   roles:
+#     - cicd

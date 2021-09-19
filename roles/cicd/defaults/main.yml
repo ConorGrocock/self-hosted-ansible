@@ -1,0 +1,6 @@
+---
+gitea_version: "1.15.2"
+gitea_url: "https://dl.gitea.io/gitea/{{gitea_version}}/gitea-{{ gitea_version }}-linux-amd64"
+gitea_unit_url: "https://raw.githubusercontent.com/go-gitea/gitea/main/contrib/systemd/gitea.service"
+gitea_username: "git"
+gitea_group: "git"

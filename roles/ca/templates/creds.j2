@@ -1,3 +1,0 @@
-user="{{ lookup('password', 'credentials/certificate_authority/postgresql/username length=30 encrypt=sha512_crypt') }}" #postgresql username
-dbpass="{{ lookup('password', 'credentials/certificate_authority/postgresql/password length=30 encrypt=sha512_crypt') }}" #postgresql password
-lempass="{{ lookup('password', 'credentials/certificate_authority/lemur/username length=30 encrypt=sha512_crypt') }}" #lemur admin password

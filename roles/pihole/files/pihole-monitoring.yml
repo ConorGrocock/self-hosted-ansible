@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  pihole-exporter:
+    environment:
+      - PIHOLE_PROTOCOL=https
+      - PIHOLE_HOSTNAME=192.168.3.2
+      - PIHOLE_PASSWORD=x@G@SUgxFzo*p#rDic2i
+      - INTERVAL=30s
+      - PORT=9617
+    volumes:
+      - "/etc/ssl/certs:/etc/ssl/certs:ro"
+    ports:
+      - "9617:9617"
+    image: "ekofr/pihole-exporter:latest"

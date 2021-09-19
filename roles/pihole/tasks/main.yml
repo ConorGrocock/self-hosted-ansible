@@ -1,0 +1,44 @@
+---
+
+- name: ensure custom facts directory exists
+  file: >
+    path=/home/{{ ansible_user_id }}/pihole/
+    recurse=yes
+    state=directory
+
+- name: Copy Docker compose file
+  copy:
+    src: pihole.yml
+    dest: /home/{{ ansible_user_id }}/pihole/docker-compose.yml
+
+- name: Create and start services
+  community.docker.docker_compose:
+    project_src: /home/{{ ansible_user_id }}/pihole/
+  register: output
+
+- ansible.builtin.debug:
+    var: output
+
+
+- name: ensure custom facts directory exists
+  file: >
+    path=/home/{{ ansible_user_id }}/pihole-monitoring/
+    recurse=yes
+    state=directory
+
+- name: Copy Docker compose file
+  copy:
+    src: pihole-monitoring.yml
+    dest: /home/{{ ansible_user_id }}/pihole-monitoring/docker-compose.yml
+
+- name: Open Required Ports
+  become: true
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+  loop:
+    - "53"
+    - "67"
+    - "547"
+    - "80"
+    - "9617"

@@ -1,0 +1,38 @@
+---
+
+- name: install java
+  apt:
+    name: openjdk-11-jdk
+    state: present
+    update_cache: true
+
+
+- name: Add Jenkins GPG key
+  apt_key:
+    url: https://pkg.jenkins.io/debian-stable/jenkins.io.key
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://pkg.jenkins.io/debian-stable binary/
+
+- name: Install Jenkins
+  apt:
+    name: "jenkins"
+    state: present
+    update_cache: true
+
+- name: Allow all access jenkins
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+  loop:
+    - 8080
+
+- name: Get Jenkins password
+  command: /bin/cat /var/lib/jenkins/secrets/initialAdminPassword
+  register: password
+  
+- name: Get Jenkins password
+  debug: 
+    msg: "{{ password.stdout_lines | quote }}"
+

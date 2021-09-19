@@ -1,0 +1,72 @@
+---
+
+- name: Create group
+  group:
+    name: "{{ gitea_group }}"
+    state: present
+
+- name: Create git user
+  ansible.builtin.user:
+    name: "{{gitea_username}}"
+    comment: Git Version Control
+    group: "{{ gitea_group }}"
+    password_lock: yes
+    create_home: yes
+
+- name: check if gitea exists
+  stat: 
+    path: /usr/local/bin/gitea
+  register: gitea_exists
+
+- name: Download gitea binary
+  get_url:
+    url: "{{ gitea_url }}"
+    dest: /usr/local/bin/gitea
+    mode: a+x
+  when: gitea_exists.stat.exists == false
+
+- name: Creates lib dirs
+  file:
+    path: "/var/lib/gitea/{{ item }}"
+    state: directory
+    owner: "{{gitea_username}}"
+    group: "{{ gitea_group }}"
+    mode: 0755
+  loop:
+    - custom
+    - data
+    - log
+
+- name: Creates lib dirs
+  file:
+    path: "/etc/gitea"
+    state: directory
+    owner: root
+    group: "{{ gitea_group }}"
+    mode: 0770
+
+
+- name: check if gitea unit exists
+  stat: 
+    path: /etc/systemd/system/gitea.service
+  register: gitea_unit_exists
+
+- name: Download gitea unit
+  get_url:
+    url: "{{ gitea_unit_url }}"
+    dest: /etc/systemd/system/gitea.service
+  when: gitea_unit_exists.stat.exists == false
+    
+- name: Start Gitea
+  systemd:
+    name: gitea
+    daemon_reload: yes
+    state: started
+    enabled: yes
+
+- name: Allow all access gitea
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+  loop:
+    - 3000

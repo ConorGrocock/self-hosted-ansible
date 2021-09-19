@@ -1,0 +1,23 @@
+version: "3"
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    environment:
+      TZ: 'Europe/London'
+      WEBPASSWORD: 'x@G@SUgxFzo*p#rDic2i'
+      REV_SERVER: "true"
+      REV_SERVER_TARGET: "192.168.1.1"
+      REV_SERVER_CIDR: "192.168.0.0/16"
+      DNSSEC: "true"
+      DNS_BOGUS_PRIV: "true"
+      DNS_FQDN_REQUIRED: "true"
+      PIHOLE_DNS_: "192.168.3.20, 1.1.1.1"
+      ServerIP: 192.168.3.2
+    volumes:
+      - './etc-pihole/:/etc/pihole/'
+      - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped

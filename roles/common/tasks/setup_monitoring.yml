@@ -38,3 +38,12 @@
     daemon_reload: yes
     state: started
     enabled: yes
+
+
+- name: Allow all access to SSH, DNS, and WWW
+  become: true
+  community.general.ufw:
+    rule: allow
+    port: '{{ item }}'
+  loop:
+    - '9100'
